@@ -4,13 +4,13 @@ import app from "./app.js";
 
 connectDB()
 .then(()=>{
+    app.listen(process.env.PORT,()=>{
+        console.log(`App is running on port ${process.env.PORT}`);
+    })
     app.on("error",(err)=>{
         console.log("Error :",err);
         throw err
     })
-    app.listen(process.env.PORT),()=>{
-        console.log(`App is running on port ${process.env.PORT}`);
-    }
 })
 .catch((err)=>{
     console.log("DB connection failed :",err);
