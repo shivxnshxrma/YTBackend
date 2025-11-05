@@ -2,8 +2,8 @@ import mongoose, {Schema} from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 const userSchema = new Schema({
-    username : {
-        typeof : String,
+    userName : {
+        type : String,
         required: true,
         unique: true,
         lowercase : true,
@@ -11,35 +11,35 @@ const userSchema = new Schema({
         index: true
     },
     email : {
-        typeof : String,
+        type : String,
         required: true,
         unique: true,
         lowercase : true,
         trim: true,
     },
-    fullname : {
-        typeof : String,
+    fullName : {
+        type : String,
         required: true,
         trim: true,
         index: true
     },
     avatar : {
-        typeof: String,
+        type: String,
         required: true
     },
-    coverimage:{
-        typeof: String
+    coverImage:{
+        type: String
     },
     watchHistory:[{
-        typeof:Schema.Types.ObjectId,
+        type:Schema.Types.ObjectId,
         ref:"Video"
     }],
     password: {
-        typeof: String,
+        type: String,
         required: [true, "Password is required!"]
     },
     refreshToken:{
-        typeof : String
+        type : String
     }
 },
 {
@@ -70,8 +70,6 @@ userSchema.methods.generateAccessToken = function (){
     )
 }
 
-userSchema.methods.generateAccessToken = function (){
-
-}
+userSchema.methods.generateAccessToken = function (){}
 
 export const User = mongoose.model("User",userSchema);
