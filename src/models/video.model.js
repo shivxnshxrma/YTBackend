@@ -3,35 +3,35 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const videoSchema = new Schema({
     videofile:{
-        typeof: String,
+        type: String,
         required: true
     },
     thumbnail:{
-        typeof: String,
+        type: String,
         required: true
     },
     title:{
-        typeof: String,
+        type: String,
         required: true
     },
     description:{
-        typeof: String,
+        type: String,
         required: true
     },
     duration:{
-        typeof: Number,
+        type: Number,
         required: true
     },
     views:{
-        typeof: Number,
+        type: Number,
         default: 0
     },
     isPublished:{
-        typeof:Boolean,
+        type:Boolean,
         default: true
     },
     owner:{
-        typeof: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref:"User"
     }
 },{timestamps:true})
