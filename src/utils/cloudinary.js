@@ -24,4 +24,34 @@ const uploadOnCloudinary = async (localFilePath)=>{
     }
 }
 
-export {uploadOnCloudinary}
+
+const deleteFromCloudinary = async (publicId) => {
+    try {
+        if (!publicId) return null;
+
+        // The resource_type is usually 'image' by default
+        const result = await cloudinary.uploader.destroy(publicId, {
+            resource_type: "image"
+        });
+        
+        return result;
+    } catch (error) {
+        console.log("Error deleting from Cloudinary:", error);
+        return null;
+    }
+}
+
+const getPublicIdFromUrl = (url) => {
+    if (!url) return null;
+    
+    // Regex matches everything after the last '/' of the upload path and before the file extension
+    // Example: http://res.cloudinary.com/.../upload/v1234/folder/myImage.jpg
+    // We want: folder/myImage
+    
+    const regex = /\/upload\/(?:v\d+\/)?(.+)\.[a-z]+$/;
+    const match = url.match(regex);
+    
+    return match ? match[1] : null; 
+}
+
+export {uploadOnCloudinary,deleteFromCloudinary,getPublicIdFromUrl}
