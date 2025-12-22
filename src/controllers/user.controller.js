@@ -192,33 +192,20 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
 })
 
 const updateUserAvatar = asyncHandler(async(req, res) => {
-    // 1. Check if local file exists
     const avatarLocalPath = req.file?.path
     if (!avatarLocalPath) {
         throw new apiError(400, "Avatar file is missing!")
     }
-
-    // 2. Upload the NEW image to Cloudinary
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     
     if (!avatar.url) {
         throw new apiError(400, "Error while uploading avatar!")
     }
-
-    // 3. Find the user to get the OLD avatar url
-    // We need the user object before updating it to access the old .avatar property
     const user = await User.findById(req.user?._id)
-
-    // 4. Delete the OLD image from Cloudinary (if it exists)
     if (user?.avatar) {
-        // We need a helper to extract the public ID from the full URL
         const oldAvatarPublicId = getPublicIdFromUrl(user.avatar) 
-        
-        // Call your Cloudinary deletion method (implementation below)
         await deleteFromCloudinary(oldAvatarPublicId)
     }
-
-    // 5. Update the user in MongoDB with the NEW url
     user.avatar = avatar.url
     await user.save({ validateBeforeSave: false })
 
@@ -228,37 +215,21 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
 })
 
 const updateUserCoverImage = asyncHandler(async(req, res) => {
-    // 1. Check if local file exists
     const coverLocalPath = req.file?.path
     if (!coverLocalPath) {
         throw new apiError(400, "Cover File is missing!")
     }
-
-    // 2. Upload the NEW image to Cloudinary first
     const cover = await uploadOnCloudinary(coverLocalPath)
     if (!cover.url) {
         throw new apiError(400, "Error while uploading Cover Image!")
     }
-
-    // 3. Find the user to get the OLD cover image URL
     const user = await User.findById(req.user?._id)
-
-    // 4. Delete the OLD image from Cloudinary
     if (user?.coverImage) {
-        // Extract public ID from the old URL
         const oldCoverPublicId = getPublicIdFromUrl(user.coverImage)
-        
-        // Execute delete (we don't await this to block the response if speed is critical, 
-        // but awaiting is safer to ensure cleanup happens)
         await deleteFromCloudinary(oldCoverPublicId)
     }
-
-    // 5. Update the user in MongoDB
     user.coverImage = cover.url
     await user.save({ validateBeforeSave: false })
-
-    // Return response
-    // Note: We return the 'user' object we just modified
     return res
         .status(200)
         .json(new apiResponse(200, user, "Cover Image updated successfully"))
